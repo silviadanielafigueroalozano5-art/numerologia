@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { validarJWT } from "../middlewares/validar-jwt.js";
 
 import {
     crearUsuario,
@@ -37,6 +38,7 @@ router.get(
     "/:id",
     idValidator,
     validarCampos,
+    validarJWT,
     obtenerUsuario
 );
 
