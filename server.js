@@ -26,6 +26,12 @@ numerologia.use("/api/compatibilidades", compatibilidadRoutes);
 numerologia.use("/api/registros-auditoria", registroAuditoriaRoutes);
 numerologia.use("/api/auth", authRoutes);
 
+// RUTAS/MÉTODOS NO MAPEADOS → 404 EN JSON (ataque #11)
+numerologia.use((req, res) => {
+    res.status(404).json({
+        mensaje: `La ruta ${req.method} ${req.originalUrl} no existe en esta API`
+    });
+});
 
 
 
