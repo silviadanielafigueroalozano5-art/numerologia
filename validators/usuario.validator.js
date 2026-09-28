@@ -4,6 +4,8 @@ import Usuario from "../models/Usuario.model.js";
 // REGLAS PARA CREAR UN USUARIO
 export const crearUsuarioValidator = [
     body("nombreCompleto")
+        .isString()
+        .withMessage("El nombre completo debe ser un texto")
         .trim()
         .notEmpty()
         .withMessage("El nombre completo es obligatorio")
@@ -29,12 +31,16 @@ export const crearUsuarioValidator = [
         }),
 
     body("passwordHash")
+        .isString()
+        .withMessage("La contraseña debe ser un texto")
         .notEmpty()
         .withMessage("La contraseña es obligatoria")
         .isLength({ min: 6 })
         .withMessage("La contraseña debe tener mínimo 6 caracteres"),
 
     body("fechaNacimiento")
+        .isString()
+        .withMessage("La fecha de nacimiento debe ser un texto en formato YYYY-MM-DD")
         .notEmpty()
         .withMessage("La fecha de nacimiento es obligatoria")
         .isISO8601()
@@ -50,6 +56,11 @@ export const crearUsuarioValidator = [
 
             return true;
         }),
+
+    body("rol")
+        .optional()
+        .isIn(["cliente", "admin"])
+        .withMessage("El rol debe ser 'cliente' o 'admin'"),
 ];
 
 
@@ -57,6 +68,8 @@ export const crearUsuarioValidator = [
 export const actualizarUsuarioValidator = [
     body("nombreCompleto")
         .optional()
+        .isString()
+        .withMessage("El nombre completo debe ser un texto")
         .trim()
         .isLength({ min: 3, max: 100 })
         .withMessage(
@@ -65,12 +78,16 @@ export const actualizarUsuarioValidator = [
 
     body("email")
         .optional()
+        .isString()
+        .withMessage("El correo electrónico debe ser un texto")
         .trim()
         .isEmail()
         .withMessage("El correo electrónico no es válido"),
 
     body("fechaNacimiento")
         .optional()
+        .isString()
+        .withMessage("La fecha de nacimiento debe ser un texto en formato YYYY-MM-DD")
         .isISO8601()
         .withMessage(
             "La fecha de nacimiento debe tener un formato válido (YYYY-MM-DD)"

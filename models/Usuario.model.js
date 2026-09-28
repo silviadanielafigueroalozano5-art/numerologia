@@ -25,6 +25,12 @@ const usuarioSchema = new mongoose.Schema({
     fechaRegistro: {
         type: Date,
         default: Date.now
+    },
+
+    rol: {
+        type: String,
+        enum: ["cliente", "admin"],
+        default: "cliente"
     }
 });
 
