@@ -1,4 +1,6 @@
 import Usuario from "../models/Usuario.model.js";
+import Lectura from "../models/Lectura.model.js";
+import PerfilNumerologico from "../models/PerfilNumerologico.model.js";
 import bcrypt from "bcrypt";
 
 // CREAR USUARIO
@@ -108,7 +110,7 @@ export const actualizarUsuario = async (req, res) => {
 };
 
 
-// ELIMINAR USUARIO
+// ELIMINAR USUARIO (con borrado en cascada de sus documentos hijos - ataque #13)
 export const eliminarUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.findByIdAndDelete(req.params.id);
@@ -119,8 +121,13 @@ export const eliminarUsuario = async (req, res) => {
             });
         }
 
+        // Se eliminan los documentos que referencian a este usuario
+        // para no dejar huérfanos (usuario_id resolviendo null en populate)
+        await Lectura.deleteMany({ usuario_id: req.params.id });
+        await PerfilNumerologico.deleteMany({ usuario_id: req.params.id });
+
         res.status(200).json({
-            mensaje: "Usuario eliminado correctamente"
+            mensaje: "Usuario eliminado correctamente junto con sus lecturas y perfiles asociados"
         });
 
     } catch (error) {
