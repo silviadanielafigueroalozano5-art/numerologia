@@ -1,4 +1,5 @@
 import { body, param } from "express-validator";
+import Usuario from "../models/Usuario.model.js";
 
 // Reglas para CREAR una lectura
 export const crearLecturaValidator = [
@@ -7,7 +8,18 @@ export const crearLecturaValidator = [
         .notEmpty()
         .withMessage("El usuario_id es obligatorio")
         .isMongoId()
-        .withMessage("El usuario_id no es un ObjectId válido"),
+        .withMessage("El usuario_id no es un ObjectId válido")
+        .custom(async (valor) => {
+            const existe = await Usuario.findById(valor);
+
+            if (!existe) {
+                throw new Error(
+                    "El usuario_id no corresponde a un usuario existente"
+                );
+            }
+
+            return true;
+        }),
 
     body("prompt")
         .trim()
@@ -34,7 +46,18 @@ export const actualizarLecturaValidator = [
     body("usuario_id")
         .optional()
         .isMongoId()
-        .withMessage("El usuario_id no es un ObjectId válido"),
+        .withMessage("El usuario_id no es un ObjectId válido")
+        .custom(async (valor) => {
+            const existe = await Usuario.findById(valor);
+
+            if (!existe) {
+                throw new Error(
+                    "El usuario_id no corresponde a un usuario existente"
+                );
+            }
+
+            return true;
+        }),
 
     body("prompt")
         .optional()
